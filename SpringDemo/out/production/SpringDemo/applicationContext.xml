@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean name="source" class="pojo.Source">
+        <property name="fruit" value="橘子"></property>
+        <property name="sugar" value="少糖"></property>
+        <property name="size" value="超大"></property>
+    </bean>
+
+    <bean name="juiceMaker" class="pojo.JuiceMaker">
+        <property name="source" ref="source" />
+    </bean>
+
+    <bean id="userSer" name="userSer" class="pojo.UserService"></bean>
+
+    <bean name="doSomeService" class="serivce.ProductService"></bean>
+    <bean id="loggerAspect" class="aspect.LoggerAspect"/>
+
+    <!-- 配置AOP -->
+    <aop:config>
+        <!-- where：在哪些地方（包.类.方法）做增加 -->
+        <aop:pointcut id="loggerCutpoint" expression="execution(* serivce.ProductService.*(..))"></aop:pointcut>
+
+        <!-- what:做什么增强 -->
+        <aop:aspect id="logAspect" ref="loggerAspect">
+            <!-- when:在什么时机（方法前/后/前后） -->
+            <aop:around method="log" pointcut-ref="loggerCutpoint"></aop:around>
+        </aop:aspect>
+
+    </aop:config>
+</beans>
